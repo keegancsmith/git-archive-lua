@@ -1,4 +1,5 @@
 const std = @import("std");
+const ziglua = @import("lib/ziglua/build.zig");
 
 // Although this function looks imperative, note that its job is to
 // declaratively construct a build graph that will be executed by an external
@@ -28,6 +29,8 @@ pub fn build(b: *std.Build) void {
     // standard location when the user invokes the "install" step (the default
     // step when running `zig build`).
     exe.install();
+
+    exe.addModule("ziglua", ziglua.compileAndCreateModule(b, exe, .{}));
 
     // This *creates* a RunStep in the build graph, to be executed when another
     // step is evaluated that depends on it. The next line below will establish
