@@ -13,7 +13,15 @@ pub fn main() !void {
     var lua = try Lua.init(allocator);
     defer lua.deinit();
 
-    // Add an integer to the Lua stack and retrieve it
-    lua.pushInteger(42);
+    // Compile a line of Lua code
+    try lua.loadString("return 1");
+    lua.setGlobal("f");
+
+    _ = try lua.getGlobal("f");
+    try lua.protectedCall(0, 1, 0);
+    std.debug.print("{}\n", .{try lua.toInteger(1)});
+
+    _ = try lua.getGlobal("f");
+    try lua.protectedCall(0, 1, 0);
     std.debug.print("{}\n", .{try lua.toInteger(1)});
 }
