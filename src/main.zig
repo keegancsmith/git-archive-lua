@@ -14,14 +14,19 @@ pub fn main() !void {
     defer lua.deinit();
 
     // Compile a line of Lua code
-    try lua.loadString("return 1");
+    try lua.loadString("return true");
     lua.setGlobal("f");
+    std.debug.print("{}\n", .{lua.getTop()});
 
     _ = try lua.getGlobal("f");
     try lua.protectedCall(0, 1, 0);
-    std.debug.print("{}\n", .{try lua.toInteger(1)});
+    std.debug.print("{}\n", .{lua.toBoolean(1)});
+    lua.pop(1);
+    std.debug.print("{}\n", .{lua.getTop()});
 
     _ = try lua.getGlobal("f");
     try lua.protectedCall(0, 1, 0);
-    std.debug.print("{}\n", .{try lua.toInteger(1)});
+    std.debug.print("{}\n", .{lua.toBoolean(1)});
+    lua.pop(1);
+    std.debug.print("{}\n", .{lua.getTop()});
 }
