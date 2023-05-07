@@ -1,10 +1,11 @@
 const std = @import("std");
 const ziglua = @import("lib/ziglua/build.zig");
+const libgit2 = @import("lib/zig-libgit2/libgit2.zig");
 
 // Although this function looks imperative, note that its job is to
 // declaratively construct a build graph that will be executed by an external
 // runner.
-pub fn build(b: *std.Build) void {
+pub fn build(b: *std.Build) !void {
     // Standard target options allows the person running `zig build` to choose
     // what target to build for. Here we do not override the defaults, which
     // means any target is allowed, and the default is native. Other options
@@ -31,6 +32,9 @@ pub fn build(b: *std.Build) void {
     exe.install();
 
     exe.addModule("ziglua", ziglua.compileAndCreateModule(b, exe, .{}));
+
+    const lib = try libgit2.create(b, target, optimize);
+    lib.link(exe);
 
     // This *creates* a RunStep in the build graph, to be executed when another
     // step is evaluated that depends on it. The next line below will establish

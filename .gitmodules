@@ -1,6 +1,6 @@
-[submodule "ziglua"]
-	path = ziglua
-	url = https://github.com/natecraddock/ziglua
 [submodule "lib/ziglua"]
 	path = lib/ziglua
 	url = https://github.com/natecraddock/ziglua
+[submodule "lib/zig-libgit2"]
+	path = lib/zig-libgit2
+	url = https://github.com/mattnite/zig-libgit2
