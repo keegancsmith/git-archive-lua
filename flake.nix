@@ -6,14 +6,26 @@
     flake-utils.url = "github:numtide/flake-utils";
     zig.url = "github:mitchellh/zig-overlay";
     zig.inputs.nixpkgs.follows = "nixpkgs";
+    zig.inputs.flake-utils.follows = "flake-utils";
   };
 
-  outputs = { self, nixpkgs, zig, flake-utils, ... }:
-    let
-      # Our supported systems are the same supported systems as the Zig binaries
-      systems = builtins.attrNames zig.packages;
-    in flake-utils.lib.eachSystem systems (system: rec {
-      devShells.default =
-        nixpkgs.mkShell { nativeBuildInputs = [ zig.master ]; };
+  outputs = {
+    self,
+    nixpkgs,
+    zig,
+    flake-utils,
+    ...
+  }:
+    flake-utils.lib.eachSystem (builtins.attrNames zig.packages) (system: let
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [zig.overlays.default];
+      };
+    in rec {
+      devShells.default = pkgs.mkShell {
+        nativeBuildInputs = [pkgs.zigpkgs.master];
+      };
+
+      formatter = pkgs.alejandra;
     });
 }
