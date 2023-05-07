@@ -9,23 +9,25 @@
     zig.inputs.flake-utils.follows = "flake-utils";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    zig,
-    flake-utils,
-    ...
-  }:
-    flake-utils.lib.eachSystem (builtins.attrNames zig.packages) (system: let
+  outputs =
+    { self
+    , nixpkgs
+    , zig
+    , flake-utils
+    , ...
+    }:
+    flake-utils.lib.eachSystem (builtins.attrNames zig.packages) (system:
+    let
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [zig.overlays.default];
+        overlays = [ zig.overlays.default ];
       };
-    in rec {
+    in
+    rec {
       devShells.default = pkgs.mkShell {
-        nativeBuildInputs = [pkgs.zigpkgs.master];
+        nativeBuildInputs = [ pkgs.zigpkgs.master ];
       };
 
-      formatter = pkgs.alejandra;
+      formatter = pkgs.nixpkgs-fmt;
     });
 }
